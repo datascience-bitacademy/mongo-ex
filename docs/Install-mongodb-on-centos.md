@@ -51,6 +51,11 @@ service mongod start
 ps -ef | grep mongod
 ```
 
+```bash
+# 시작 서비스로 등록
+chkconfig mongod on
+```
+
 ### 방화벽 설정
 
 ```bash
