@@ -2,6 +2,9 @@
 const express = require("express"); //  미들웨어
 const http = require('http');       //  실제 http 기능 수행
 
+//  몽고DB 모듈
+const { MongoClient } = require("mongodb");
+
 //  Express 객체 생성
 const app = express();
 //  set 메서드 : 익스프레스 내부여 여러 값을 설정(주로 설정)
@@ -83,6 +86,10 @@ app.get("/render", (req, resp) => {
         .render("render");  //  render.ejs 템플릿을 렌더링
 });
 
+//  라우터 등록(미들웨어)
+const webRouter = require("./router/web")(app);
+app.use("/web", webRouter); //  요청이 /web/* -> 라우터가 처리
+
 
 function startExpress() {
     //  실제 실행은 express가 아니라 http 모듈이 수행
@@ -91,4 +98,23 @@ function startExpress() {
             app.get("port"));
     });
 }
-startExpress(); //  익스프레스 실행
+// startExpress(); //  익스프레스 실행
+
+function startServer() {
+    //  데이터베이스 연결
+    const url = "mongodb://192.168.1.134:27017";
+
+    MongoClient.connect(url, { useUnifiedTopology: true })
+        .then(client => {
+            const db = client.db("mydb");
+            console.log("db", db);
+            //  express app에 몽고DB 커넥션 세팅
+            app.set("db", db);
+
+            startExpress();
+        }).catch(err => {
+            console.error(err);
+        }); 
+}
+startServer();
+
