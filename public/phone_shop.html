@@ -105,7 +105,21 @@
                     document.querySelector("#product-info h2");
                 title.innerText = obj.getAttribute("title");
             });
+
+        
         }
+
+        //  #keyword 입력 상자에 keyup 이벤트 부착
+        document.getElementById("keyword")
+            .addEventListener("keyup", function(event) {
+            console.log(event);
+            console.log(event.target);  //  이벤트 발생 객체
+            console.log("눌러진 키:", event.keyCode);
+
+            //  #btn-search 버튼의 value에 검색어 추가
+            var btn = document.getElementById("btn-search");
+            btn.innerText = event.target.value + " 검색";
+        });
     });
 </script>
 </html>
